@@ -83,15 +83,18 @@ Node* llfilter(Node* head, Comp pred)
     //*********************************************
     // Provide your implementation below
     //*********************************************
-
+  // If empty list or no nodes are left
     if (head == nullptr){
       return nullptr;
     }
+    // Next node save
     Node* temp = head->next;
+    // If predicate is true, delete
     if(pred(head->val)){
       delete head;
       return llfilter(temp, pred);
     }
+    // Move head to next node
     head->next = llfilter(temp, pred);
     return head;
 }
