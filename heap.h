@@ -2,6 +2,9 @@
 #define HEAP_H
 #include <functional>
 #include <stdexcept>
+#include <vector>
+#include <cstddef>
+#include <utility>
 
 template <typename T, typename PComparator = std::less<T> >
 class Heap
@@ -63,7 +66,7 @@ private:
   /// Add whatever helper functions and data members you need below
 
   std::vector<T> data;
-  int m_, 
+  int m_;
   PComparator c_;
 
 
@@ -73,7 +76,14 @@ private:
 
 // Heap Constructor
 template <typename T, typename PComparator>
-Heap<T, PComparator>:: Heap(int m, PComparator c): m_(m), c_(c)
+Heap<T, PComparator>::Heap(int m, PComparator c): m_(m), c_(c)
+{
+
+}
+
+// Heap Deconstructor
+template <typename T, typename PComparator>
+Heap<T, PComparator>::~Heap()
 {
 
 }
@@ -89,7 +99,7 @@ T const & Heap<T,PComparator>::top() const
     // ================================
     // throw the appropriate exception
     // ================================
-      throw(std::underflow_error());
+      throw(std::underflow_error(""));
 
   }
   // If we get here we know the heap has at least 1 item
@@ -109,19 +119,40 @@ void Heap<T,PComparator>::pop()
     // ================================
     // throw the appropriate exception
     // ================================
-    throw(std::underflow_error());
+    throw(std::underflow_error(""));
   }
-  // If there is stuff in heap
+  // Place the pop node at the back
   data[0] = data.back();
+  // Remove node
   data.pop_back();
-
+  // Move nodes down
   size_t node = 0;
-  size_t child;
+  size_t mM_ = m_;
+  
+  // Loop through all children
   while (node < data.size()){
-    child
+    size_t child = mM_ * node +1;
+    // Node has no children
+    if (child >= data.size()){
+      break;
+    }
+    size_t loc = child;
+    for (size_t i = 1; i < mM_ && child + i < data.size(); i++){
+      size_t temp = child + i;
+
+      if (c_(data[temp], data[loc])){
+        loc = temp;
+      }
   }
 
-
+  // If the heap is fine as it is
+  if(!c_(data[loc], data[node])){
+    break;
+  }
+  // Perform swap
+  std::swap(data[node], data[loc]);
+  node = loc;
+  }
 }
 
 template <typename T,typename PComparator>
@@ -131,11 +162,29 @@ bool Heap<T, PComparator>::empty() const
 }
 
 template <typename T, typename PComparator>
-bool Heap<T, PComparator>::size() const
+size_t Heap<T, PComparator>::size() const
 {
   return data.size();
 }
 
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::push(const T& item)
+{
+  data.push_back(item);
+  size_t loc = data.size() - 1;
+  size_t parent;
+  while(loc > 0){
+    // Identity the parent node
+    parent = (loc - 1) / m_;
+    // Compares the child node and parent
+    if(!(c_(data[loc], data[parent]))){
+      break;
+    }
+    // Swap the nodes
+    std::swap(data[parent], data[loc]);
+    loc = parent;
+  }
+}
 
 #endif
 
