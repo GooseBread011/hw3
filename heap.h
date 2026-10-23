@@ -62,13 +62,21 @@ public:
 private:
   /// Add whatever helper functions and data members you need below
 
-
+  std::vector<T> data;
+  int m_, 
+  PComparator c_;
 
 
 };
 
 // Add implementation of member functions here
 
+// Heap Constructor
+template <typename T, typename PComparator>
+Heap<T, PComparator>:: Heap(int m, PComparator c): m_(m), c_(c)
+{
+
+}
 
 // We will start top() for you to handle the case of 
 // calling top on an empty heap
@@ -81,12 +89,12 @@ T const & Heap<T,PComparator>::top() const
     // ================================
     // throw the appropriate exception
     // ================================
-
+      throw(std::underflow_error());
 
   }
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
-
+  return data[0];
 
 
 }
@@ -101,14 +109,32 @@ void Heap<T,PComparator>::pop()
     // ================================
     // throw the appropriate exception
     // ================================
-
-
+    throw(std::underflow_error());
   }
+  // If there is stuff in heap
+  data[0] = data.back();
+  data.pop_back();
 
+  size_t node = 0;
+  size_t child;
+  while (node < data.size()){
+    child
+  }
 
 
 }
 
+template <typename T,typename PComparator>
+bool Heap<T, PComparator>::empty() const
+{
+  return data.empty();
+}
+
+template <typename T, typename PComparator>
+bool Heap<T, PComparator>::size() const
+{
+  return data.size();
+}
 
 
 #endif
